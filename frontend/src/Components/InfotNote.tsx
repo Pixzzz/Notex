@@ -6,7 +6,7 @@ import { getRelativeTime } from "../utils/RelativeTime";
 
 
 type Note = {
-  _id: string
+  _id:string;
   title: string;
   description: string;
   dateCreated: Date
@@ -16,7 +16,7 @@ const InfotNote = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const FormateDate = new Date();
-  const DateString = FormateDate.toLocaleDateString();
+  // const DateString = FormateDate.toLocaleDateString();
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
@@ -27,13 +27,12 @@ const InfotNote = () => {
       const data: Note[] = await res.json();
       setNotes(data);
       console.log(data);
-      
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id:string) => {
     
     try {
       const response = await fetch(`http://localhost:3000/information/delete/${id}`, {

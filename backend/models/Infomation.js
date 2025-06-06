@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const InformationSchema = new Schema({
     title:{type: String, required: true},
     description:{type: String, required: true},
-    dateCreated:{type: Date, default: new Date().getTime()},
+    dateCreated:{type: Date, default: Date.now()},
 })
 
 module.exports = mongoose.model('Information', InformationSchema);

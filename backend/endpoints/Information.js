@@ -14,6 +14,23 @@ router.get("/all", async (req, res) => {
   }
 });
 
+//get information by ID
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json({ message: "ID is required" });
+
+  try {
+    const information = await Information.findById(id);
+    if (!information)
+      return res.status(404).jason({ message: "Information not found" });
+    res.json(information);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error getting information", error: error.message });
+  }
+});
+
 //post information
 router.post("/add", async (req, res) => {
   try {
@@ -46,6 +63,7 @@ router.put("/update/:id", async (req, res) => {
     const { id } = req.params;
     const { title, description } = req.body;
     const info = await Information.findById(id);
+
     if (!info) {
       return res.status(404).json({ message: "no note/information found" });
     }

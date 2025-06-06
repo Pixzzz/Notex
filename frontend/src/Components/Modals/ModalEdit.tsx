@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface ModalEditProps {
   isOpen: boolean;
   onClose: () => void;
-  noteId: string;
+  noteId: number;
 }
 
 const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, noteId }) => {
@@ -25,14 +25,30 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, noteId }) => {
           }),
         }
       );
+
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
       if (response.ok) {
-        onClose()
+        onClose();
       }
     } catch (error) {}
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/information/${noteId}`);
+        const data = await res.json();
+        setTitle(data.title);
+        setDescription(data.description);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [isOpen, noteId]);
 
   if (!isOpen) return null;
 
