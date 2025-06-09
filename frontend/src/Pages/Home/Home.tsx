@@ -1,19 +1,35 @@
 import NavBar from "../../Components/NavBar";
 import InfotNote from "../../Components/InfotNote";
 import Modal from "../../Components/Modals/Modal";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useState } from "react";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const Navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("Token");
+    if(!token){
+      Navigate("/");
+    }
+  }, []);
+
+  const hadleLogOut = () =>{
+    localStorage.removeItem("Token");
+    localStorage.removeItem("User");
+    Navigate("/")
+  }
 
   const OpenModal = () => setIsModalOpen(true);
   const CloseModal = () => setIsModalOpen(false);
 
   return (
     <div>
-      <NavBar Search={search} setSearch={setSearch} />
+      <NavBar Search={search} setSearch={setSearch} onLogOut={hadleLogOut} />
       <div className="flex justify-center mt-4">
         <button
           onClick={OpenModal}

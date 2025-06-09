@@ -15,7 +15,7 @@ app.use("/information", Information);
 app.use("/user", User);
 
 app.get("/", (req, res) => {
-  res.json({ data: "Welcome to NoteApp by: Eleazar :)" });
+  res.json({ data: "Welcome to NoteApp by Eleazar :)" });
 });
 
 app.listen(3000);

@@ -2,9 +2,10 @@ import React from "react";
 interface SearchProps {
   Search: string;
   setSearch: (value: string) => void;
+  onLogOut: () => void;
 }
 
-const NavBar: React.FC<SearchProps> = ({Search, setSearch}) => {
+const NavBar: React.FC<SearchProps> = ({Search, setSearch, onLogOut}) => {
   return (
     <>
       {/*NavBar*/}
@@ -35,7 +36,7 @@ const NavBar: React.FC<SearchProps> = ({Search, setSearch}) => {
         {/*Nombre de usuario*/}
         <div className="flex flex-col justify-center items-end">
           <span className="text-md font-medium">User-name</span>
-          <a href="#" className="text-sm hover:underline hover:text-red-700">
+          <a href="#" onClick={onLogOut} className="text-sm hover:underline hover:text-red-700">
             Log Out
           </a>
         </div>

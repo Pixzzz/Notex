@@ -15,6 +15,36 @@ router.get("/all", async (req, res) => {
       .json({ message: "Error getting users", error: error.message });
   }
 });
+
+//login user
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Please fill the required fields" });
+  }
+
+  const userInfo = await User.findOne({ email: email });
+  if (!userInfo) {
+    return res.status(404).json({ Message: "User not found" });
+  }
+  if (userInfo.email == email && userInfo.password == password) {
+    const user = { user: userInfo };
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "36000m",
+    });
+    return res.status(200).json({
+      error: false,
+      message: "Login successful",
+      accessToken,
+      userInfo,
+    });
+  } else {
+    return res
+      .status(401)
+      .json({ error: true, message: "Invalid credentials" });
+  }
+});
+
 // post user
 router.post("/add", async (req, res) => {
   try {
@@ -45,14 +75,12 @@ router.post("/add", async (req, res) => {
       expiresIn: "36000m",
     });
 
-    return res
-      .status(200)
-      .json({
-        error: false,
-        newUser,
-        accessToken,  
-        message: "User added successfully",
-      });
+    return res.status(200).json({
+      error: false,
+      newUser,
+      accessToken,
+      message: "User added successfully",
+    });
   } catch (error) {
     console.log(error);
     return res
