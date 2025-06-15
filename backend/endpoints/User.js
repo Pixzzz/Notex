@@ -4,9 +4,8 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const { authenticateToken } = require("../utilities");
 
-
 //get user
-router.get("/all",authenticateToken, async (req, res) => {
+router.get("/all", authenticateToken, async (req, res) => {
   try {
     const user = await User.find();
     res.json(user);
@@ -17,6 +16,17 @@ router.get("/all",authenticateToken, async (req, res) => {
   }
 });
 
+// get user
+router.get("/get-user", authenticateToken, async (req, res) => {
+  const { user } = req.user;
+  const isUser = await User.findById(user._id);
+  if (!isUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  return res.json({
+    user: { name: isUser.name, email: isUser.email, _id: isUser._id },
+  });
+});
 
 //login user
 router.post("/login", async (req, res) => {
@@ -92,7 +102,7 @@ router.post("/add", async (req, res) => {
 });
 
 //delete user
-router.delete("/delete/:id",authenticateToken, async (req, res) => {
+router.delete("/delete/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id);

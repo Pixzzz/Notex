@@ -1,4 +1,5 @@
 import React from "react";
+import { getInitials } from "../utils/getInitials"; // Assuming you have a utility function to get initials
 interface SearchProps {
   Search: string;
   setSearch: (value: string) => void;
@@ -6,10 +7,12 @@ interface SearchProps {
   userName: string; // Optional prop for user name
 }
 
-const NavBar: React.FC<SearchProps> = ({Search, setSearch, onLogOut, userName}) => {
-
-  
-
+const NavBar: React.FC<SearchProps> = ({
+  Search,
+  setSearch,
+  onLogOut,
+  userName,
+}) => {
   return (
     <>
       {/*NavBar*/}
@@ -29,20 +32,22 @@ const NavBar: React.FC<SearchProps> = ({Search, setSearch, onLogOut, userName}) 
           />
         </div>
 
-        {/*Imagen del usuario*/}
-        <div>
-          <img
-            className="w-8 h-8 rounded-full"
-            src="https://avatars.githubusercontent.com/u/122415616?v=4&size=64"
-            alt="user-pfp"
-          />
+        <div className="flex flex-row gap-3">
+          {/*Imagen del usuario*/}
+        <div className="w-12 h-12 rounded-full font-bold text-xl flex justify-center items-center bg-green-100">
+          {getInitials(userName)}
         </div>
         {/*Nombre de usuario*/}
         <div className="flex flex-col justify-center items-end">
           <span className="text-md font-medium">{userName}</span>
-          <a href="#" onClick={onLogOut} className="text-sm hover:underline hover:text-red-700">
+          <a
+            href="#"
+            onClick={onLogOut}
+            className="text-sm hover:underline hover:text-red-700"
+          >
             Log Out
           </a>
+        </div>
         </div>
       </div>
     </>

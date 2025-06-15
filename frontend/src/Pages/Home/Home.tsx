@@ -9,17 +9,17 @@ import { useState } from "react";
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [user, setUser] = useState('');
+  const [name, setName] = useState('');
   const Navigate = useNavigate();
 
   const fetchDataUser = async() => {
     const token = localStorage.getItem('Token');
     try {
-      const response = await fetch('http://localhost:3000/User/all',{
+      const response = await fetch('http://localhost:3000/User/get-user',{
         headers: {Authorization: `Bearer ${token}`},
       })
       const data = await response.json();
-      setUser(data.name)
+      setName(data.user.name)
       console.log(data)
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -51,7 +51,7 @@ const Home = () => {
         Search={search}
         setSearch={setSearch}
         onLogOut={hadleLogOut}
-        userName={user}
+        userName={name}
       />
       <div className="flex justify-center mt-4">
         <button
