@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const { authtenticateToken } = require("../utilities");
+const { authenticateToken } = require("../utilities");
+
 
 //get user
-router.get("/all", async (req, res) => {
+router.get("/all",authenticateToken, async (req, res) => {
   try {
     const user = await User.find();
     res.json(user);
@@ -15,6 +16,7 @@ router.get("/all", async (req, res) => {
       .json({ message: "Error getting users", error: error.message });
   }
 });
+
 
 //login user
 router.post("/login", async (req, res) => {
@@ -90,7 +92,7 @@ router.post("/add", async (req, res) => {
 });
 
 //delete user
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id",authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id);

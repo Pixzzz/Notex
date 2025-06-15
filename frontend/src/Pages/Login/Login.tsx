@@ -11,21 +11,21 @@ const Login = () => {
     try {
       const response = await fetch("http://localhost:3000/User/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ email, password }),
       });
       if (!response.ok) throw new Error(`Error ${response.statusText}`);
 
       const data = await response.json();
-      localStorage.setItem("Token", data.token);
+      console.log(data)
+      localStorage.setItem("Token", data.accessToken);
       localStorage.setItem("User", JSON.stringify(data.user));
       Navigate("/Home");
     } catch (error) {}
   };
 
-  useEffect(() => {
-    handleLogin;
-  }, []);
 
   return (
     <form action="" onSubmit={handleLogin}>
@@ -44,7 +44,7 @@ const Login = () => {
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            type="text"
+            type="password"
             placeholder="Password"
             className="bg-white rounded w-70 p-1"
           />
@@ -56,7 +56,7 @@ const Login = () => {
           </a>
         </div>
         <div className="flex justify-center items-center mt-15 hover:font-semibold">
-          <Button Title="Login"  />
+          <Button Title="Login" />
         </div>
       </div>
     </form>

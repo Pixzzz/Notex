@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Information = require("../models/Infomation");
+const { authenticateToken } = require("../utilities");
 
 //get information
-router.get("/all", async (req, res) => {
+router.get("/all",authenticateToken, async (req, res) => {
   try {
     const information = await Information.find();
     res.json(information);
@@ -15,7 +16,7 @@ router.get("/all", async (req, res) => {
 });
 
 //get information by ID
-router.get("/:id", async (req, res) => {
+router.get("/:id",authenticateToken, async (req, res) => {
   const { id } = req.params;
   if (!id) return res.status(400).json({ message: "ID is required" });
 
@@ -32,7 +33,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //post information
-router.post("/add", async (req, res) => {
+router.post("/add",authenticateToken, async (req, res) => {
   try {
     const { title, description } = req.body;
 
@@ -58,7 +59,7 @@ router.post("/add", async (req, res) => {
 });
 
 //put information
-router.put("/update/:id", async (req, res) => {
+router.put("/update/:id",authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description } = req.body;
@@ -97,7 +98,7 @@ router.put("/update/:id", async (req, res) => {
 });
 
 // delete information
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id",authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const information = await Information.findById(id);

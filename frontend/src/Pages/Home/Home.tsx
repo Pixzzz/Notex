@@ -9,31 +9,54 @@ import { useState } from "react";
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [user, setUser] = useState('');
   const Navigate = useNavigate();
 
+  const fetchDataUser = async() => {
+    const token = localStorage.getItem('Token');
+    try {
+      const response = await fetch('http://localhost:3000/User/all',{
+        headers: {Authorization: `Bearer ${token}`},
+      })
+      const data = await response.json();
+      setUser(data.name)
+      console.log(data)
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
+
+  // Check if the user is authenticated when the component mounts. If not, redirect to the login page
   useEffect(() => {
+    fetchDataUser();
+    // Check if the user is authenticated
     const token = localStorage.getItem("Token");
-    if(!token){
+    if (!token) {
       Navigate("/");
     }
   }, []);
 
-  const hadleLogOut = () =>{
+  const hadleLogOut = () => {
     localStorage.removeItem("Token");
     localStorage.removeItem("User");
-    Navigate("/")
-  }
+    Navigate("/");
+  };
 
   const OpenModal = () => setIsModalOpen(true);
   const CloseModal = () => setIsModalOpen(false);
 
   return (
     <div>
-      <NavBar Search={search} setSearch={setSearch} onLogOut={hadleLogOut} />
+      <NavBar
+        Search={search}
+        setSearch={setSearch}
+        onLogOut={hadleLogOut}
+        userName={user}
+      />
       <div className="flex justify-center mt-4">
         <button
           onClick={OpenModal}
-          className="bg-green-800 hover:bg-green-600 text-white font-bold p-2 rounded-sm cursor-pointer"
+          className="bg-green-800  text-white font-bold p-2 rounded-sm cursor-pointer hover:bg-green-700 transition duration-300 ease-in-out"
         >
           Add new note
         </button>

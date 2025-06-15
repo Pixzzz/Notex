@@ -10,10 +10,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const token = localStorage.getItem("Token");
     try {
       const response = await fetch("http://localhost:3000/information/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Barer ${token}`,
+        },
         body: JSON.stringify({
           title,
           description,
@@ -21,8 +25,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       });
       if (!response.ok) throw new Error(`Error: ${response.statusText}`);
       if (response.ok) {
-        setTitle('')
-        setDescription('')
+        setTitle("");
+        setDescription("");
         onClose();
       }
     } catch (error) {}

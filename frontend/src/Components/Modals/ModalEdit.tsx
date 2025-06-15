@@ -12,13 +12,16 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, noteId }) => {
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const token = localStorage.getItem("Token");
     try {
       const response = await fetch(
         `http://localhost:3000/information/update/${noteId}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Barer ${token}`,
+          },
           body: JSON.stringify({
             title,
             description,
@@ -37,8 +40,11 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, noteId }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem("Token");
       try {
-        const res = await fetch(`http://localhost:3000/information/${noteId}`);
+        const res = await fetch(`http://localhost:3000/information/${noteId}`,
+          {headers: { Authorization: `Bearer ${token}` } }
+        );
         const data = await res.json();
         setTitle(data.title);
         setDescription(data.description);

@@ -3,9 +3,13 @@ interface SearchProps {
   Search: string;
   setSearch: (value: string) => void;
   onLogOut: () => void;
+  userName: string; // Optional prop for user name
 }
 
-const NavBar: React.FC<SearchProps> = ({Search, setSearch, onLogOut}) => {
+const NavBar: React.FC<SearchProps> = ({Search, setSearch, onLogOut, userName}) => {
+
+  
+
   return (
     <>
       {/*NavBar*/}
@@ -35,7 +39,7 @@ const NavBar: React.FC<SearchProps> = ({Search, setSearch, onLogOut}) => {
         </div>
         {/*Nombre de usuario*/}
         <div className="flex flex-col justify-center items-end">
-          <span className="text-md font-medium">User-name</span>
+          <span className="text-md font-medium">{userName}</span>
           <a href="#" onClick={onLogOut} className="text-sm hover:underline hover:text-red-700">
             Log Out
           </a>

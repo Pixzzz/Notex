@@ -4,12 +4,11 @@ import ModalEdit from "../Components/Modals/ModalEdit";
 import { useState, useEffect } from "react";
 import { getRelativeTime } from "../utils/RelativeTime";
 
-
 type Note = {
-  _id:string;
+  _id: string;
   title: string;
   description: string;
-  dateCreated: Date
+  dateCreated: Date;
 };
 
 const InfotNote = () => {
@@ -20,30 +19,37 @@ const InfotNote = () => {
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-
   const fetchData = async () => {
+    const token = localStorage.getItem("Token");
     try {
-      const res = await fetch("http://localhost:3000/information/all");
+      const res = await fetch("http://localhost:3000/information/all", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data: Note[] = await res.json();
       setNotes(data);
       console.log(data);
+      console.log(token);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleDelete = async (id:string) => {
-    
+  const handleDelete = async (id: string) => {
+    const token = localStorage.getItem("Token");
     try {
-      const response = await fetch(`http://localhost:3000/information/delete/${id}`, {
-        method: 'DELETE'
-      })
-      if (!response.ok) {throw new Error(`Error: ${response.statusText}`);}
+      const response = await fetch(
+        `http://localhost:3000/information/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
       fetchData();
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  };
 
   useEffect(() => {
     fetchData();
@@ -60,16 +66,28 @@ const InfotNote = () => {
             <h3 className="font-bold text-2xl text-green-800">{note.title}</h3>
             <p>{note.description}</p>
             <div className="flex justify-between items-end">
-              <p className="font-semibold opacity-55 mt-2">{getRelativeTime(note.dateCreated)}</p>
+              <p className="font-semibold opacity-55 mt-2">
+                {getRelativeTime(note.dateCreated)}
+              </p>
               <div className="flex justify-end gap-5">
                 <span className="cursor-pointer text-gray-400 hover:text-green-800">
-                  <button onClick={openModal} className="cursor-pointer">
+                  <button
+                    onClick={openModal}
+                    className="cursor-pointer transition-all duration-300 transform hover:scale-110"
+                  >
                     <EditIcon />
                   </button>
-                  <ModalEdit isOpen={isOpen} onClose={closeModal} noteId={note._id} />
+                  <ModalEdit
+                    isOpen={isOpen}
+                    onClose={closeModal}
+                    noteId={note._id}
+                  />
                 </span>
                 <span className="cursor-pointer text-gray-400 hover:text-red-700">
-                  <button onClick={() => handleDelete(note._id)} className="cursor-pointer">
+                  <button
+                    onClick={() => handleDelete(note._id)}
+                    className="cursor-pointer transition-all duration-300 transform hover:scale-110"
+                  >
                     <DeleteIcon />
                   </button>
                 </span>

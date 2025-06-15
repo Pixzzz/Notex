@@ -56,7 +56,7 @@ const SignUp = () => {
             className="bg-white rounded w-70 p-2"
           />
           <input
-            type="text"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
