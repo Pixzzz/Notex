@@ -14,15 +14,17 @@ type Note = {
 const InfotNote = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const FormateDate = new Date();
-  // const DateString = FormateDate.toLocaleDateString();
-  const openModal = () => setIsOpen(true);
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
+  const openModal = (id: string) => {
+    setIsOpen(true);
+    setSelectedNoteId(id);
+  };
   const closeModal = () => setIsOpen(false);
 
   const fetchData = async () => {
     const token = localStorage.getItem("Token");
     try {
-      const res = await fetch("http://localhost:3000/information/all", {
+      const res = await fetch(`http://localhost:3000/information/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data: Note[] = await res.json();
@@ -72,7 +74,7 @@ const InfotNote = () => {
               <div className="flex justify-end gap-5">
                 <span className="cursor-pointer text-gray-400 hover:text-green-800">
                   <button
-                    onClick={openModal}
+                    onClick={() => openModal(note._id)}
                     className="cursor-pointer transition-all duration-300 transform hover:scale-110"
                   >
                     <EditIcon />
@@ -80,7 +82,7 @@ const InfotNote = () => {
                   <ModalEdit
                     isOpen={isOpen}
                     onClose={closeModal}
-                    noteId={note._id}
+                    noteId={selectedNoteId}
                   />
                 </span>
                 <span className="cursor-pointer text-gray-400 hover:text-red-700">

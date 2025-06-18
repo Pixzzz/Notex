@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 interface ModalEditProps {
   isOpen: boolean;
   onClose: () => void;
-  noteId: number;
+  noteId: string;
 }
 
 const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, noteId }) => {

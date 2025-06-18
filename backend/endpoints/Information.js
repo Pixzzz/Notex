@@ -4,9 +4,9 @@ const Information = require("../models/Infomation");
 const { authenticateToken } = require("../utilities");
 
 //get information
-router.get("/all",authenticateToken, async (req, res) => {
+router.get("/all", authenticateToken, async (req, res) => {
   try {
-    const information = await Information.find();
+    const information = await Information.find({ user: req.user._id });
     res.json(information);
   } catch (error) {
     res
@@ -16,14 +16,14 @@ router.get("/all",authenticateToken, async (req, res) => {
 });
 
 //get information by ID
-router.get("/:id",authenticateToken, async (req, res) => {
+router.get("/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
   if (!id) return res.status(400).json({ message: "ID is required" });
 
   try {
     const information = await Information.findById(id);
     if (!information)
-      return res.status(404).jason({ message: "Information not found" });
+      return res.status(404).json({ message: "Information not found" });
     res.json(information);
   } catch (error) {
     res
@@ -33,9 +33,10 @@ router.get("/:id",authenticateToken, async (req, res) => {
 });
 
 //post information
-router.post("/add",authenticateToken, async (req, res) => {
+router.post("/add", authenticateToken, async (req, res) => {
   try {
     const { title, description } = req.body;
+    const { user } = req.user;
 
     if (!title || !description) {
       return res
@@ -45,6 +46,7 @@ router.post("/add",authenticateToken, async (req, res) => {
     const newInformation = new Information({
       title,
       description,
+      userId: user._id,
     });
 
     await newInformation.save();
@@ -59,37 +61,35 @@ router.post("/add",authenticateToken, async (req, res) => {
 });
 
 //put information
-router.put("/update/:id",authenticateToken, async (req, res) => {
+router.put("/update/:id", authenticateToken, async (req, res) => {
   try {
-    const { id } = req.params;
+    const noteId = req.params.id;
     const { title, description } = req.body;
-    const info = await Information.findById(id);
+    const { user } = req.user;
 
-    if (!info) {
-      return res.status(404).json({ message: "no note/information found" });
+    if (!title && !description) {
+      return res.status(400).json({
+        message: "Title or Description is required to update",
+      });
     }
 
-    //
-    const fieldsToUpdate = { title, description };
-    const newValues = {};
-
-    Object.entries(fieldsToUpdate).forEach(([key, value]) => {
-      if (value !== undefined) newValues[key] = value;
+    const information = await Information.findById({
+      _id: noteId,
+      userId: user._id,
     });
 
-    if (Object.keys(newValues).length === 0) {
-      return res.status(400).json({ message: "theres no values to update" });
+    if (!information) {
+      return res.status(404).json({ message: "Information not found" });
     }
 
-    const updateInformation = await Information.findByIdAndUpdate(
-      id,
-      newValues,
-      { new: true }
-    );
+    if (title) information.title = title;
+    if (description) information.description = description;
+
+    await information.save();
 
     return res
       .status(200)
-      .json({ message: "Information updated successfully", updateInformation });
+      .json({ information, message: "Information updated successfully" });
   } catch (error) {
     return res
       .status(500)
@@ -98,10 +98,13 @@ router.put("/update/:id",authenticateToken, async (req, res) => {
 });
 
 // delete information
-router.delete("/delete/:id",authenticateToken, async (req, res) => {
+router.delete("/delete/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const information = await Information.findById(id);
+    const information = await Information.findById({
+      _id: id,
+      userId: req.user._id,
+    });
 
     if (!information)
       return res

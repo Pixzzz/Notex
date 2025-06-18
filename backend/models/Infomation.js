@@ -5,6 +5,7 @@ const InformationSchema = new Schema({
     title:{type: String, required: true},
     description:{type: String, required: true},
     dateCreated:{type: Date, default: Date.now()},
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: false }
 })
-
+    
 module.exports = mongoose.model('Information', InformationSchema);

@@ -19,13 +19,12 @@ const Login = () => {
       if (!response.ok) throw new Error(`Error ${response.statusText}`);
 
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       localStorage.setItem("Token", data.accessToken);
-      localStorage.setItem("User", JSON.stringify(data.user));
+      localStorage.setItem("UserInfo", JSON.stringify(data.userInfo));
       Navigate("/Home");
     } catch (error) {}
   };
-
 
   return (
     <form action="" onSubmit={handleLogin}>
