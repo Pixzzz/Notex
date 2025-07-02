@@ -3,6 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import ModalEdit from "../Components/Modals/ModalEdit";
 import { useState, useEffect } from "react";
 import { getRelativeTime } from "../utils/RelativeTime";
+import axios from "axios";
 
 type Note = {
   _id: string;
@@ -24,10 +25,10 @@ const InfotNote = () => {
   const fetchData = async () => {
     const token = localStorage.getItem("Token");
     try {
-      const res = await fetch(`http://localhost:3000/information/all`, {
+      const res = await axios.get(`http://localhost:3000/information/all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data: Note[] = await res.json();
+      const data: Note[] = res.data;
       setNotes(data);
       console.log(data);
       console.log(token);
@@ -39,18 +40,14 @@ const InfotNote = () => {
   const handleDelete = async (id: string) => {
     const token = localStorage.getItem("Token");
     try {
-      const response = await fetch(
+      await axios.delete(
         `http://localhost:3000/information/delete/${id}`,
         {
-          method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
       fetchData();
-    } catch (error) {}
+    } catch (error) {console.error(`Error deleting note ${error}`)}
   };
 
   useEffect(() => {

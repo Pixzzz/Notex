@@ -3,6 +3,8 @@ import InfotNote from "../../Components/InfotNote";
 import Modal from "../../Components/Modals/Modal";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
+
 
 import { useState } from "react";
 
@@ -15,10 +17,10 @@ const Home = () => {
   const fetchDataUser = async() => {
     const token = localStorage.getItem('Token');
     try {
-      const response = await fetch('http://localhost:3000/User/get-user',{
+      const response = await axios.get('http://localhost:3000/User/get-user',{
         headers: {Authorization: `Bearer ${token}`},
       })
-      const data = await response.json();
+      const data = response.data;
       setName(data.user.name)
       console.log(data)
     } catch (error) {

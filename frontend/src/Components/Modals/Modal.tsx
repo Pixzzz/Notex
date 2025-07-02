@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,24 +13,25 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     const token = localStorage.getItem("Token");
     try {
-      const response = await fetch("http://localhost:3000/information/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Barer ${token}`,
-        },
-        body: JSON.stringify({
-          title,
-          description,
-        }),
-      });
-      if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-      if (response.ok) {
+      const response = await axios.post(
+        "http://localhost:3000/information/add",
+        { title, description },
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Barer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200 || response.status === 201) {
         setTitle("");
         setDescription("");
         onClose();
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(`Error: ${error}`);
+    }
   };
 
   useEffect(() => {

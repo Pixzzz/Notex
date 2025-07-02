@@ -1,6 +1,7 @@
 import Button from "../../Components/extra/button";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -11,21 +12,18 @@ const SignUp = () => {
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/User/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
-      });
-      if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-      if (response.ok) {
+      const response = await axios.post(
+        "http://localhost:3000/User/add",
+        { name, email, password },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (response.status === 200 || response.status === 201) {
         setName("");
         setEmail("");
         setPassword("");
-        Navigate('/')
+        Navigate("/");
       }
     } catch (error) {}
   };

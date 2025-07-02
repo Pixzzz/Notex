@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 interface ModalEditProps {
   isOpen: boolean;
@@ -14,38 +15,29 @@ const ModalEdit: React.FC<ModalEditProps> = ({ isOpen, onClose, noteId }) => {
     e.preventDefault();
     const token = localStorage.getItem("Token");
     try {
-      const response = await fetch(
-        `http://localhost:3000/information/update/${noteId}`,
+      const response = await axios.put(
+        `http://localhost:3000/information/update/${noteId}`, {title,description},
         {
-          method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Barer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            title,
-            description,
-          }),
         }
       );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-      if (response.ok) {
+      if (response.status === 200 || response.status === 201) {
         onClose();
       }
-    } catch (error) {}
+    } catch (error) {console.error(`Error updating note ${error}`)}
   };
 
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("Token");
       try {
-        const res = await fetch(`http://localhost:3000/information/${noteId}`,
+        const res = await axios.get(`http://localhost:3000/information/${noteId}`,
           {headers: { Authorization: `Bearer ${token}` } }
         );
-        const data = await res.json();
+        const data = await res.data;
         setTitle(data.title);
         setDescription(data.description);
       } catch (error) {

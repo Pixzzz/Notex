@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Information = require("../models/Infomation");
+const User = require("../models/User");
 const { authenticateToken } = require("../utilities");
 
 //get information
@@ -12,6 +13,51 @@ router.get("/all", authenticateToken, async (req, res) => {
     res
       .status(500)
       .json({ message: "error getting information", error: error.message });
+  }
+});
+
+router.get("/getNotes/", authenticateToken, async (req, res) => {
+  const { user } = req.user;
+
+  try {
+    const infos = await Information.find({ userId: user._id });
+    return res.json({
+      error: false,
+      infos,
+      message: "All notes",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" });
+  }
+});
+
+router.get("/searchInfo", authenticateToken, async (req, res) => {
+  const { user } = req.user;
+  const { query } = req.query;
+  if (!query) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Search query required" });
+  }
+  try {
+    const matchingNote = await Information.find({
+      userId: user._id,
+      $or: [
+        { title: { $regex: new RegExp(query, "i") } },
+        { description: { $regex: new RegExp(query, "i") } },
+      ],
+    });
+    return res.json({
+      error: false,
+      infos: matchingNote,
+      message: "Notes successfully match",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" });
   }
 });
 
