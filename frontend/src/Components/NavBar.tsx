@@ -1,7 +1,9 @@
 import React from "react";
+import SearchIcon from '@mui/icons-material/Search';
 import { getInitials } from "../utils/getInitials"; // Assuming you have a utility function to get initials
 interface SearchProps {
   Search: string;
+  onClick: () => void;
   setSearch: (value: string) => void;
   onLogOut: () => void;
   userName: string; // Optional prop for user name
@@ -11,6 +13,7 @@ const NavBar: React.FC<SearchProps> = ({
   Search,
   setSearch,
   onLogOut,
+  onClick,
   userName,
 }) => {
   return (
@@ -30,6 +33,9 @@ const NavBar: React.FC<SearchProps> = ({
             onChange={(e) => setSearch(e.target.value)}
             className="bg-zinc-100 w-full max-w-sm rounded-sm p-2 "
           />
+          <div onClick={onClick} className="cursor-pointer">
+            <SearchIcon className="cursor-pointer flex gap-4"/>
+          </div>
         </div>
 
         <div className="flex flex-row gap-3">

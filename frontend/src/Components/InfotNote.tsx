@@ -25,10 +25,10 @@ const InfotNote = () => {
   const fetchData = async () => {
     const token = localStorage.getItem("Token");
     try {
-      const res = await axios.get(`http://localhost:3000/information/all`, {
+      const res = await axios.get(`http://localhost:3000/information/getNotes`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data: Note[] = res.data;
+      const data: Note[] = res.data.infos;
       setNotes(data);
       console.log(data);
       console.log(token);

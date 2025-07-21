@@ -18,7 +18,6 @@ router.get("/all", authenticateToken, async (req, res) => {
 
 router.get("/getNotes/", authenticateToken, async (req, res) => {
   const { user } = req.user;
-
   try {
     const infos = await Information.find({ userId: user._id });
     return res.json({

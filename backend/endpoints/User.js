@@ -84,7 +84,7 @@ router.post("/add", async (req, res) => {
     await newUser.save();
 
     const accessToken = jwt.sign({ newUser }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "36000m",
+      expiresIn: "5h",
     });
 
     return res.status(200).json({

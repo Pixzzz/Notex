@@ -3,34 +3,53 @@ import InfotNote from "../../Components/InfotNote";
 import Modal from "../../Components/Modals/Modal";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
-
+import axios from "axios";
 
 import { useState } from "react";
 
 const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [name, setName] = useState('');
+  const [search, setSearch] = useState([]);
+  const [query, setQuery] = useState("");
+  const [name, setName] = useState("");
   const Navigate = useNavigate();
 
-  const fetchDataUser = async() => {
-    const token = localStorage.getItem('Token');
+  const fetchDataUser = async () => {
+    const token = localStorage.getItem("Token");
     try {
-      const response = await axios.get('http://localhost:3000/User/get-user',{
-        headers: {Authorization: `Bearer ${token}`},
-      })
+      const response = await axios.get("http://localhost:3000/User/get-user", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = response.data;
-      setName(data.user.name)
-      console.log(data)
+      setName(data.user.name);
+      console.log(data);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
-  }
+  };
+
+  const onSearchChange = async (value: string) => {
+    const token = localStorage.getItem("Token");
+    const response = await axios.get(
+      `http://localhost:3000/information/searchInfo`,
+      {
+        params: {
+          query: value,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = response.data;
+    setSearch(data.infos);
+    console.log(data.infos);
+  };
 
   // Check if the user is authenticated when the component mounts. If not, redirect to the login page
   useEffect(() => {
     fetchDataUser();
+    onSearchChange('');
     // Check if the user is authenticated
     const token = localStorage.getItem("Token");
     if (!token) {
@@ -50,9 +69,10 @@ const Home = () => {
   return (
     <div>
       <NavBar
-        Search={search}
-        setSearch={setSearch}
+        Search={query}
+        setSearch={setQuery}
         onLogOut={hadleLogOut}
+        onClick={() => onSearchChange(query)}
         userName={name}
       />
       <div className="flex justify-center mt-4">
